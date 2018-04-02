@@ -3,9 +3,6 @@ title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell
-  - ruby
-  - python
-  - javascript
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
@@ -19,119 +16,90 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/lord/slate). Feel free to edit it and use it as a base for your own API's documentation.
-
-# Authentication
-
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
+## Post Order
 
 ```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+Request url -- ws://127.0.0.1/ws/order
+Request body 
+{
+  "Event": "orders",
+  "Payload": {
+    "ClOrID": 1,
+    "Symbol": "BTC/USD",
+    "OrderSideStr": "1",
+    "OrderTypeStr": "C",
+    "OrderQty": "1",
+    "Price": "10",
+    "StopPrice": "20"
+  }
+}
 ```
 
-```javascript
-const kittn = require('kittn');
 
-let api = kittn.authorize('meowmeowmeow');
 ```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
+> The above endpoint returns JSON structured like this:
 
 ```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
+{
+  "OrderType": "C",
+  "OrderID": "203277",
+  "ClOrdID": "12",
+  "ExecID": "1522616700795.20761",
+  "ExecTransType": "0",
+  "ExecType": "0",
+  "OrdStatus": "0",
+  "Symbol": "BTC/USD",
+  "Side": "1",
+  "OrderQty": "1",
+  "LeavesQty": "1",
+  "CumQty": "0",
+  "Message": ""
+}
 ```
 
-This endpoint retrieves all kittens.
+This posts order
 
-### HTTP Request
+### Websocket
 
-`GET http://example.com/api/kittens`
+`ws://127.0.0.1/ws/order`
 
 ### Query Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+Event |  | Identifies request is an order request
+Payload |  | Contains order request params
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
+### Payload parameters
+
+Parameter |  Description
+--------- | -----------
+ClOrID | A unique identifier assigned by the client. Uniqueness must be guaranteed within a single trading day.
+Symbol | The symbol for the base and variable currencies of the currency pair in the following format: baseCCY/variableCCY
+OrderSideStr | 1=Buy 2=Sell
+OrderTypeStr | 3=Stop Loss, 4=Stop Limit, C=Forex Market, F=Forex Limit, P=Pegged, V=Trailing Stop, W=One Cancels Other, X=If Done, Y=If Done OCO, Z=Iceberg
+OrderQty | The amount of the dealt currency (using the Symbol field) to be either bought or sold (as determined by the OrderSideStr field).
+Price | If the OrdType is Stop Limit, Forex Limit or Iceberg, then this is set to the limit price. For If Done and If Done OCO, this field represents the If Leg Limit Price. Value should be greater than zero.
+StopPrice | The stop rate at which the market order will be placed into the market if OrdType is Stop (3). Or The stop rate at which the limit order will be placed into the market if OrdType is Stop Limit (4). Value should be greater than zero.
+
+### Response parameters
+Parameter |  Description
+--------- | -----------
+OrderType | 3 = Stop 4 = Stop Limit C = Forex Market F = Forex Limit Z = Iceberg
+OrderID | Unique identifier for Order as assigned by Shift Forex. Uniqueness must be guaranteed within a single trading day.
+ClOrdID | Unique identifier for Order as assigned by client. Uniqueness must be guaranteed within a single trading day.
+ExecID | Unique identifier of execution message as assigned by Shift Forex.
+ExecTransType | Execution transaction type: 0 = New 3 = Status
+ExecType | Describes the specific ExecutionRpt (i.e. Pending Cancel) while OrdStatus will always identify the current order status (i.e. Partially Filled). Note: please refer to OrdStatus for partial fills as ExecType will always return fill for any execution. 0 = New 2 = Fill 4 = Canceled 5 = Replace 8 = Rejected C = Expired
+OrdStatus | Identifies current status of order. 0 = New 1 = Partially filled 2 = Filled 4 = Canceled 5 = Replaced 8 = Rejected C = Expired
+Symbol | The symbol for the base and variable currencies of the currency pair in the following format: baseCCY/variableCCY
+Side | 1=Buy 2=Sell
+OrderQty | Quantity ordered
+LeavesQty | Quantity open for further execution. If the OrdStatus is Canceled, Expired, or Rejected (in which case the order is no longer active) then LeavesQty could be 0, otherwise LeavesQty = OrderQty - CumQty.
+CumQty | Total quantity (e.g. number of shares) filled. Not sent if ExecType = 8, Rejected, or if the entire order is canceled, ExecType = 4, Canceled.
+
+
 
 ## Get a Specific Kitten
 
