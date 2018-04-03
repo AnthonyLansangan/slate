@@ -608,3 +608,62 @@ MinQty | MinQty of the market data entry. Will only be available if FIX Server's
 QuoteEntryID | Unique id for the prices.
 NumberOfOrders | Number of orders for the aggregate. Usually shows 1, except when aggregated and attributed are both set to true where real number of orders for aggregated is specified.
 MDEntryPositionNo | Display position of a bid or offer, numbered from most competitive to least competitive, per market side, beginning with 1.
+
+
+## Unsubscribe to Market Data
+
+
+```shell
+Request url -- ws://127.0.0.1/ws/market/cancel
+Request body 
+{
+  "Event": "marketData",
+  "Payload": {
+    "MarketDataReqID": "1",
+    "SubscriptionReqType": "2",
+    "Symbol": "BTC/USD"
+  }
+}
+```
+
+```
+
+> The above endpoint returns JSON structured like this:
+
+```json
+{
+  "Symbol": "BTC/USD",
+  "MDReqID": "1",
+  "NoMDEntries": "00",
+  "MDEntries": null
+}
+```
+
+This endpoint unsubscribes from market data updates.
+
+### Websocket
+
+`ws://127.0.0.1/ws/market/cancel`
+
+### Query Parameters
+
+Parameter | Description
+--------- | -----------
+Event | Should be "marketData"
+Payload | Contains market data request params
+
+### Payload parameters
+
+Parameter |  Description
+--------- | -----------
+MarketDataReqID | Must be unique, or the ID of previous Market Data Request to disable if SubscriptionRequestType = Disable previous Snapshot + Updates Request (2).
+SubscriptionReqType | Indicates to the other party what type of response is expected. A subscribe request asks for updates as the status changes. Unsubscribe will cancel any future update messages from the counter party. 1 = Snapshot + Updates 2 = Unsubscribe
+Symbol | The symbol for the base and variable currencies of the currency pair in the following format: baseCCY/variableCCY
+
+### Response parameters
+Parameter |  Description
+--------- | -----------
+Symbol | The symbol for the base and variable currencies of the currency pair in the following format: baseCCY/variableCCY
+MDReqID | Unique identifier for Market Data Request
+NoMDEntries | Number of entries in market data message.
+MDEntries | Array of market data entries
