@@ -632,10 +632,8 @@ Request body
 
 ```json
 {
-  "Symbol": "BTC/USD",
-  "MDReqID": "1",
-  "NoMDEntries": "00",
-  "MDEntries": null
+  "Message": "OK",
+  "Code": 200
 }
 ```
 
@@ -663,7 +661,5 @@ Symbol | The symbol for the base and variable currencies of the currency pair in
 ### Response parameters
 Parameter |  Description
 --------- | -----------
-Symbol | The symbol for the base and variable currencies of the currency pair in the following format: baseCCY/variableCCY
-MDReqID | Unique identifier for Market Data Request
-NoMDEntries | Number of entries in market data message.
-MDEntries | Array of market data entries
+Message | Response Message
+Code | HTTP Response Code
