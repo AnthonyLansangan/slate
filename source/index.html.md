@@ -66,10 +66,10 @@ This posts order
 
 ### Query Parameters
 
-Parameter | Default | Description
---------- | ------- | -----------
-Event |  | Identifies request is an order request
-Payload |  | Contains order request params
+Parameter | Description
+--------- | -----------
+Event | Should be "orders"
+Payload | Contains order request params
 
 ### Payload parameters
 
@@ -149,10 +149,10 @@ This endpoint cancels order.
 
 ### Query Parameters
 
-Parameter | Default | Description
---------- | ------- | -----------
-Event |  | Identifies request is an order request
-Payload |  | Contains order cancel request params
+Parameter | Description
+--------- | -----------
+Event | Should be "orders"
+Payload | Contains order cancel request params
 
 ### Payload parameters
 
@@ -578,10 +578,10 @@ This endpoint subcribes to Market Data.
 
 ### Query Parameters
 
-Parameter | Default | Description
---------- | ------- | -----------
-Event |  | Identifies request is an order request
-Payload |  | Contains market data request params
+Parameter | Description
+--------- | -----------
+Event | Should be "marketData"
+Payload | Contains market data request params
 
 ### Payload parameters
 
